@@ -31,10 +31,23 @@ class Har_Brain:
         print("Brain initialized")
 
     def predict(self, dataList):
+
+        predictionReference = ["Sailing", "Walking"]
+
         transform = self.trainingScaler.transform(np.array(dataList))
         predictionSet = []
         predictionSet.append(transform)
         prediction = self.brain.predict(np.array(predictionSet))
+
+        predictionResult = prediction[0];
+
+        predictionResultDic = {}
+
+        for i in range(len(predictionResult)):
+            predictionResultDic[predictionReference[i]] = predictionResult[i];
+
+        return predictionResultDic;
+
         translatedPredictions = self.fileFeatureManager.interpretPrediction(prediction, ["Sailing", "Walking"])
         return translatedPredictions[0]
 

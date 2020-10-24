@@ -3,11 +3,17 @@ from flask import request
 from flask_cors import CORS
 import json
 from HAR_BRAIN import Har_Brain
+from flask import jsonify
 
 brain = Har_Brain()
 app = Flask(__name__)
 CORS(app)
 
+class PredictionResult:
+
+    def __init__(self, activity, confidence):
+        self.activity = activity;
+        self.confidence = confidence;
 
 @app.route("/predict", methods=["GET", "POST"])
 def predict():
@@ -19,7 +25,14 @@ def predict():
         dataList.append([data["xAxis"], data["yAxis"], data["zAxis"]])
 
     prediction = brain.predict(dataList)
-    return prediction
+
+    result = [];
+
+    for key in prediction:
+        value = prediction[key]
+        result.append([key, str(value)])
+
+    return jsonify({"predictions": result})
 
 
 @app.route("/test", methods=["GET", "POST"])
